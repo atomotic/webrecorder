@@ -147,11 +147,17 @@ class AppController(BaseController):
         def get_tags_in_collection(user, coll):
             return self.manager.get_tags_in_collection(user, coll)
 
+        def get_app_host():
+            return self.app_host
+
         def is_beta():
             return self.manager.is_beta()
 
         def can_tag():
             return self.manager.can_tag()
+
+        def is_public(user, coll):
+            return self.manager.is_public(user, coll)
 
         @contextfunction
         def can_admin(context):
@@ -187,6 +193,50 @@ class AppController(BaseController):
             return self.get_body_class(context, action)
 
         @contextfunction
+        def get_share_url(context):
+            prefix = context.get('top_prefix')
+            wbreq = context.get('wbrequest')
+            ts = context.get('ts', '')
+            url = context.get('url')
+            br = context.get('browser', '')
+
+            if br != '':
+                br = '$br:'+br
+
+            # get timestamp from context or wbreq (depending if cbrowser)
+            ts = wbreq['wb_url'].timestamp if wbreq else ts
+
+            return '{host}{ts}{browser}/{url}'.format(host=prefix,
+                                                      browser=br,
+                                                      ts=ts,
+                                                      url=url)
+
+        @contextfunction
+        def get_embed_url(context):
+            prefix = context.get('top_prefix')
+            wbreq = context.get('wbrequest')
+            ts = context.get('ts', '')
+            url = context.get('url')
+            br = context.get('browser', '')
+
+            if br != '':
+                br = '$br:'+br
+
+            # get timestamp from context or wbreq (depending if cbrowser)
+            ts = wbreq['wb_url'].timestamp if wbreq else ts
+
+            # add embed to url prefix
+            url_parts = prefix.split('/')
+            url_parts.insert(3, '_embed')
+            prefix = '/'.join(url_parts)
+
+            return '{prefix}{ts}/{url}'.format(
+                prefix=prefix,
+                ts=ts,
+                url=url
+            )
+
+        @contextfunction
         def is_out_of_space(context):
             return self.manager.is_out_of_space(context.get('curr_user', ''))
 
@@ -213,8 +263,12 @@ class AppController(BaseController):
         jinja_env.globals['is_owner'] = is_owner
         jinja_env.globals['is_anon'] = is_anon
         jinja_env.globals['is_beta'] = is_beta
+        jinja_env.globals['is_public'] = is_public
         jinja_env.globals['get_path'] = get_path
         jinja_env.globals['get_body_class'] = get_body_class
+        jinja_env.globals['get_share_url'] = get_share_url
+        jinja_env.globals['get_embed_url'] = get_embed_url
+        jinja_env.globals['get_app_host'] = get_app_host
         jinja_env.globals['is_out_of_space'] = is_out_of_space
         jinja_env.globals['get_browsers'] = get_browsers
         jinja_env.globals['get_tags'] = get_tags

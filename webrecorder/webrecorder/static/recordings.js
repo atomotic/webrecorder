@@ -9,6 +9,7 @@ $(function() {
     CountdownTimer.start();
     SizeProgressBar.start();
     Snapshot.start();
+    ShareWidget.start();
 });
 
 function setUrl(url) {
@@ -263,6 +264,80 @@ var EventHandlers = (function() {
         switchCBPatch: switchCBPatch,
         switchCBReplay: switchCBReplay,
     }
+})();
+
+
+var ShareWidget = (function (){
+
+    function checkPublicStatus(user, coll) {
+        $.ajax({
+            url:'/api/v1/collections/'+coll+'/is_public?user='+user,
+            method: 'GET',
+            success: function (data){
+                if(data.is_public) {
+                    $('.public-switch').toggleClass('hidden', true);
+                }
+                render(data.is_public);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                if( xhr.status === 404) {
+                    // permission denied
+                }
+
+                console.log('err');
+            }
+        });
+    }
+
+    function start() {
+        $(".ispublic").bootstrapSwitch();
+        $(".ispublic").on('switchChange.bootstrapSwitch', update);
+
+        $('.dropdown-menu').on('click', function (evt) {evt.stopPropagation(); });
+        $('.share-container .glyphicon-remove-circle').on('click', function (evt) { $(this).parents('.share-container').toggleClass('open'); });
+
+        var obj = $('.shareables');
+        obj.css('height', obj.height());
+
+        // manage share option visiblity
+        var status = $('.share-container').data('public');
+        if(typeof status !== 'undefined' && !status) {
+            obj.addClass('disabled');
+        } else if(typeof status === 'undefined') {
+            checkPublicStatus(user, coll);
+        }
+
+        $('.shareables input, .shareables textarea').on('focus', function (){
+            this.setSelectionRange(0, this.value.length);
+        });
+    }
+
+    function update(evt, state) {
+        $.ajax({
+            url: '/api/v1/collections/' + coll + '/public?user=' + user,
+            method: 'POST',
+            data: {'public': state},
+            success: function() {
+                render(state);
+            },
+            error: function() {
+                $('.ispublic').bootstrapSwitch('toggleState', true)
+                console.log('err');
+            }
+        });
+    }
+
+    function render(state) {
+        $('.ispublic').bootstrapSwitch('state', state, true);
+        $('.shareables').toggleClass('disabled', !state);
+    }
+
+    return {
+        'start': start,
+        'update': update,
+        'render': render,
+        'checkPublicStatus':checkPublicStatus
+    };
 })();
 
 

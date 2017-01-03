@@ -1,5 +1,7 @@
+{% from '/utils.html' import sharing_widget %}
+
 {% if curr_mode and curr_mode != 'live' %}
-<div class="col-md-11">
+<div class="col-md-10 col-sm-10">
     <form class="{{ 'content-form' if curr_mode != 'new' else 'start-recording' }} form-group-recorder-url">
         <div class="banner-status">
             {% if curr_mode != "new" %}
@@ -71,14 +73,16 @@
             <input type="text" class="url-input-recorder form-control" name="url" data-value-encoded="{{ url }}" data-target-decoded="value" value="" {% if not browser %}autofocus{% endif %} required>
             <input class="hidden" type="submit">
             <span id="replay-date" class="replay-date"></span>
-            <div class="input-group-addon"></div>
         </div>
     </form>
 
 </div>
 
-<div class="recording-actions text-center col-md-1">
-    <form class="{{ 'content-action' if curr_mode != 'new' else 'start-recording' }} top-buffer">
+<div class="recording-actions text-center col-md-2 col-sm-2 top-buffer">
+    {% set share_url = get_share_url() %}
+    {% set embed_url = get_embed_url() %}
+    {{ sharing_widget(share_url, embed_url, coll_title, can_admin(), is_public(user, coll)) }}
+    <form class="{{ 'content-action' if curr_mode != 'new' else 'start-recording' }}">
         <button type="submit" class="btn btn-default">
             {{ 'Finish' if curr_mode != 'new' else 'Start' }}
         </button>

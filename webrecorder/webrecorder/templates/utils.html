@@ -1,0 +1,60 @@
+
+{#
+    Sharing widget
+    - if public status is unknown (None), request from the api.
+#}
+{% macro sharing_widget(url, embed_url, coll, owner=False, is_public=none) %}
+    {% set safe_url = url|urlencode %}
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=190097681462944";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <div class='share-container pull-right'
+        {% if is_public %}data-public='true'
+        {% elif is_public is not none %}data-public='false'{% endif %}>
+        <button type='button'
+                class='btn btn-default dropdown-toggle sharing-widget'
+                data-toggle="dropdown"
+                aria-label='Sharing widget'>
+                    <span class='glyphicon glyphicon-share'></span>
+        </button>
+        <div class='dropdown-menu share-modal arrow_box'>
+            <span class='glyphicon glyphicon-remove-circle'></span>
+            {% if owner %}
+                <div class='public-switch clearfix {% if is_public %}hidden{% endif %}'>
+                    <p class='make-public-desc'>
+                        Collection <strong>{{ coll }}</strong> is set to private. To get a share link, make the collection public:
+                    </p>
+                    <div class="access-switch" style="float:right;">
+                        {% include 'public_private_switch.html' %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class='shareables'>
+                <div class='platforms clearfix'>
+                    <!-- twitter -->
+                    <iframe
+                      src="https://platform.twitter.com/widgets/tweet_button.html?size=l&url={{ safe_url }}&via=webrecorder_io"
+                      title="Twitter Tweet Button"
+                      style="border: 0; overflow: hidden; width: 76px; height: 37px; float: left;">
+                    </iframe>
+
+                    <!-- facebook -->
+                    <div class="fb-share-button" data-href="{{ url }}" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ safe_url }}">Share</a></div>
+                </div>
+
+                <label for='shareable-url'>Copy and paste to share:</label>
+                <input type='text' id='shareable-url' value='{{ url }}' />
+
+                <label for='shareable-embed-code'>Embed code:</label>
+                <textarea id='shareable-embed-code'><iframe  src="{{ embed_url }}" onload="" seamless="seamless" frameborder="0" scrolling="yes" class="pager_iframe"></iframe></textarea>
+            </div>
+        </div>
+    </div>
+{%- endmacro %}

@@ -585,6 +585,8 @@ div.filter-label {
 
 .recording-actions {
     margin-bottom: 8px;
+    display: flex;
+    justify-content: center;
 }
 
 .table-noborder  {
@@ -902,7 +904,7 @@ div.filter-label {
 .containerized .open > .dropdown-toggle, .containerized .dropdown-toggle:focus, .containerized .dropdown-toggle:active, .containerized .dropdown-toggle.active, .containerized .dropdown-toggle:hover {
     background-color: #F7F7F7;
 }
-.linklist .dropdown-menu, .containerized .dropdown-menu {
+.share-container .dropdown-menu, .linklist .dropdown-menu, .containerized .dropdown-menu {
     transition: opacity .2s ease-in-out, transform .2s ease-in-out;
     transform: scale(0.98, 0.98);
 
@@ -912,17 +914,22 @@ div.filter-label {
     display: block;
     border-radius: 0px;
     padding: 0px;
-
-    max-height: 33vh;
-    overflow: auto;
 }
+.linklist .dropdown-menu, .containerized .dropdown-menu { max-height: 33vh; overflow: auto; }
 .linklist.open .dropdown-menu, .containerized .open > .dropdown-menu {
     opacity: 1;
     transform: scale(1, 1);
     top: 100%;
     left: 0;
 }
-.linklist .dropdown-menu, .containerized .dropdown-menu {
+.share-container.open > .dropdown-menu {
+    opacity: 1;
+    transform: scale(1, 1);
+    top: calc(100% + 15px);
+    left: auto;
+}
+.linklist .dropdown-menu, .containerized .dropdown-menu,
+.share-container .dropdown-menu {
     -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,.175);
     box-shadow: 2px 2px 5px rgba(0,0,0,.175);
 }
@@ -1115,4 +1122,94 @@ div.paging-container .home-link .glyphicon {
 
 div.paging-container:hover .home-link {
     opacity: 1;
+}
+
+
+/*
+    Sharing widget
+*/
+.share-container {
+    position: relative;
+    margin-right: 5px;
+    margin-left: -5px;
+}
+
+.share-container .share-modal {
+    min-width: 300px;
+    border-radius: 0;
+    padding: 10px;
+}
+.share-modal p {
+    margin: 0px 40px 10px 0px;
+}
+.share-modal .glyphicon-remove-circle {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 10px;
+    cursor: pointer;
+}
+.share-modal label {
+    display: block;
+    clear: both;
+}
+
+.share-modal input {
+    margin-bottom: 10px;
+}
+
+.arrow_box:after,
+.arrow_box:before {
+    bottom: 100%;
+    /* 100% - width of share button divided by 2 */
+    left: calc(100% - 20px);
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.arrow_box:after {
+    border-color: rgba(136, 183, 213, 0);
+    border-bottom-color: #FFF;
+    border-width: 12px;
+    margin-left: -12px;
+}
+.arrow_box:before {
+    border-color: rgba(194, 225, 245, 0);
+    border-bottom-color: rgba(0,0,0,.15);
+    border-width: 13px;
+    margin-left: -13px;
+}
+
+.fb-share-button { float: left; margin-left: 5px;}
+.shareables {
+    /*position: relative;*/
+    -webkit-transition: height .22s ease-out;
+    transition: height .22s ease-out;
+    overflow: hidden;
+}
+.shareables textarea { overflow: hidden; }
+
+.public-switch.hidden {
+    display: none;
+}
+.shareables.disabled {
+    height: 0px !important;
+}
+/*
+.shareables.disabled:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255, 0.4);
+    z-index: 99;
+    cursor: not-allowed;
+}*/
+
+body {
+    min-width: 875px;
 }
