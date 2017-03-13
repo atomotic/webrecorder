@@ -24,6 +24,7 @@ install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "pip install --disable-pip-version-check --user --upgrade pip"
   - "pip install pyinstaller"
+  - "pip install cffi"
   - ps: "cd webrecorder"
   - "python setup.py install"
 
