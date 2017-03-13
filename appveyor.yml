@@ -29,18 +29,8 @@ install:
   - "python setup.py install"
 
 build_script:
-  # Build the compiled extension
+  - ps: "cd webrecorder/standalone"
+  - pyinstaller --clean --additional-hooks-dir ./hooks/ -y -F ./standalone.py
 
-  # - "%CMD_IN_ENV% python setup.py build"
-
-test_script:
-  # Run the project tests
-  # - "%CMD_IN_ENV% python setup.py nosetests"
-
-after_test:
-  # If tests are successful, create binary packages for the project.
-  # - ps: "ls dist"
-
-# artifacts:
-#   # Archive the generated packages in the ci.appveyor.com build report.
-#   - path: dist\*
+artifacts:
+  - path: dist\*
