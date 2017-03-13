@@ -33,4 +33,4 @@ build_script:
   - pyinstaller --clean --additional-hooks-dir ./hooks/ -y -F ./standalone.py
 
 artifacts:
-  - path: dist\*
+  - path: webrecorder\webrecorder\standalone\dist\standalone.exe
