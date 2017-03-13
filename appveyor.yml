@@ -3,7 +3,7 @@ branches:
     - develop
 
 environment:
- global:
+  global:
     CMD_IN_ENV: "cmd /E:ON /V:ON /C obvci_appveyor_python_build_env.cmd"
   matrix:
     - PYTHON: "C:\\Python34-x64"
