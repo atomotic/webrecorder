@@ -16,11 +16,6 @@ install:
         Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
           throw "There are newer queued builds for this pull request, failing early." }
 
-  # Fix for problem building extensions for x64 under Python 3.3 and 3.4
-  # See: http://help.appveyor.com/discussions/problems/4278-cant-build-some-c-extensions-with-python-34-x64
-  # Used same solution as Matplotlib: https://github.com/matplotlib/matplotlib/blob/master/appveyor.yml
-  # - cmd: copy ci\appveyor\vcvars64.bat "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64"
-
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "pip install --disable-pip-version-check --user --upgrade pip"
   - "pip install -U setuptools"
@@ -31,7 +26,8 @@ install:
 
 build_script:
   - ps: "cd webrecorder/standalone"
-  - pyinstaller --clean --additional-hooks-dir ./hooks/ -y -F ./standalone.py
+  - ps: "copy standalone.py webrecorder.py"
+  - pyinstaller --clean --additional-hooks-dir ./hooks/ -y -F ./webrecorder.py
 
 artifacts:
-  - path: webrecorder\webrecorder\standalone\dist\standalone.exe
+  - path: webrecorder\webrecorder\standalone\dist\webrecorder.exe
