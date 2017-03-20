@@ -28,6 +28,8 @@ install:
   - "pip install --disable-pip-version-check --user --upgrade pip"
   - "pip install pyinstaller"
   - "pip install cffi"
+  - "pip install git+https://github.com/ikreymer/pywb.git@new-pywb#egg=pywb-0.50.0"
+  - "pip install git+https://github.com/FedericoCeratto/bottle-cork.git@94d4017a4d1b0d20328e9283e341bd674df3a18a#egg=bottle-cork"
   - ps: "cd webrecorder"
   - "python setup.py install"
 
